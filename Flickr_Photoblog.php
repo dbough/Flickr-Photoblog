@@ -40,6 +40,18 @@ class Flickr_Photoblog {
     var $attribution = false;
 
     /**
+     * Holds errors.
+     * @var string
+     */
+    var $errors;
+
+    /**
+     * Suppress error output?
+     * @var boolean
+     */
+    var $errorSuppress = false;
+
+    /**
      * Flickr/API object
      * @var object
      */
@@ -145,6 +157,8 @@ class Flickr_Photoblog {
             'api_key'=>$apiKey
         ));
 
+        $this->getError();
+
         // Put our arguments into vars.
         $this->userName = $userName;
         $this->tags = $tags;
@@ -169,7 +183,7 @@ class Flickr_Photoblog {
             }
         }
         else {
-            $this->getError($this->flickr);
+            $this->getError();
         }
     }
 
@@ -188,7 +202,7 @@ class Flickr_Photoblog {
             }
         }
         else {
-            $this->getError($this->flickr);
+            $this->getError();
         }
     }
 
@@ -232,7 +246,7 @@ class Flickr_Photoblog {
             }
         }
         else {
-            $this->getError($this->flickr);
+            $this->getError();
         }
     }
 
@@ -281,7 +295,7 @@ class Flickr_Photoblog {
             return $this->getMatchingPhoto($photoArray, $this->maxSize, $limit);
         }
         else {
-            $this->getError($this->flickr);
+            $this->getError();
         }
     }
 
@@ -313,7 +327,7 @@ class Flickr_Photoblog {
             return $this->getMatchingPhoto($photoArray, $availSizes[$currentSize-1], $limit-1);
         }
         else {
-            print "[Error]  Unable to get photo size\n";
+            $this->error = "[Flickr Photoblog]  Unable to get photo size\n";
             exit;
         }
     }
@@ -347,7 +361,7 @@ class Flickr_Photoblog {
             return array('description'=>$description, 'title'=>$title, 'date'=>$date);
         }
         else {
-            $this->getError($this->flickr);
+            $this->getError();
         }
     }
 
@@ -423,12 +437,15 @@ class Flickr_Photoblog {
      * @param  object $flickr
      * @return string
      */
-    function getError($flickr)
+    function getError()
     {
-        $code = $flickr->getErrorCode();
-        $message = $flickr->getErrorMessage();
+        $code = $this->flickr->getErrorCode();
+        $message = $this->flickr->getErrorMessage();
 
-        print "[Error]  Code: " . $code . "  Message:  " . $message . "\n";
+        $this->error = "[Flickr]  Code: " . $code . "  Message:  " . $message . "\n";
+        if (!$errorSuppress) {
+            return $this->errors;
+        }
         exit;
     }
 

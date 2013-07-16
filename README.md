@@ -1,7 +1,8 @@
 Flickr-Photoblog v0.1.0
 =======================
+Flickr Photoblog allows you to easily create a blog post or webpage from photos on Flickr.  
 
-Flickr Photoblog allows you to easily create a photoblog post or webpage from photos on Flickr.  
+See a working example at http://www.danielbough.com/photoblog
 
 Author
 ------
@@ -15,11 +16,11 @@ This software is free to use under the GPLv2 License.
 
 Overview
 --------  
-Flickr Photoblog allows you to create a blog post using photos and photo descriptions gathered from Flickr.com.  With as little as three arguments, you can create html for a post that can be dropped into any blog, or, if you prefer, you can create a full, stand alone web page.  
+Flickr Photoblog allows you to create a blog post using photos and photo descriptions gathered from Flickr.com.  With as little as three arguments, you can create html that can be dropped into any blog post or, if you prefer, you can create a full, stand alone web page.  
 
 Why?
 ----
-Inspiration for Flickr Photoblog was garnered from DannyChoo.com; a blog about the wonders of Japan.  I had noticed that the photos and text used in some blog posts were identical to their Flickr counterparts.  I figured Danny didn't create both copies by hand and so I started investigating ways to do the same thing programatically.
+Inspiration for Flickr Photoblog was garnered from http://www.DannyChoo.com; a blog about Japan.  I had noticed that the photos and text used in some posts were identical to their Flickr counterparts.  I figured Danny didn't create both copies by hand and so I began investigating ways to do the same thing programatically.
 
 Requirements
 ------------
@@ -29,7 +30,7 @@ http://www.flickr.com/services/api/misc.api_keys.html
 **PEAR::Flickr_API**  
 http://code.iamcal.com/php/flickr/readme.htm
 
-*To Install*  
+**To Install**  
  - If you do not have PEAR, install it using Aptitude:  `apt-get install php-pear` or visit http://pear.php.net/ for more info.
  - `pear install -of http://code.iamcal.com/php/flickr/Flickr_API-Latest.tgz`  
 
@@ -59,7 +60,7 @@ Result:
 
     View more at &lt;a href=&quot;http://www.dannychoo.com/en/post/26961/Akihabara+Shops+8.html&quot; rel=&quot;nofollow&quot;&gt;www.dannychoo.com/en/post/26961/Akihabara+Shops+8.html&lt;/a&gt;</p>
 
-**Create html for full page.**
+**Create html for full web page.**
 
     <?php
     include "Flickr_Photoblog.php";
@@ -102,20 +103,19 @@ Options
 -------
 - Set maximum photo size.  *This will attempt to get photos of the specified size.  If they don't exist, the next size lower will be attempted (default starts at Medium).*  
 
-    /** Options:
-     * Square          (75x75)
-     * Large Square    (150x150)
-     * Thumbnail       (100 on longest side)
-     * Small           (240 on longest side)
-     * Small 320       (320 on longest side)
-     * Medium          (500 on longest side)
-     * Medium 640      (640 on longest side)
-     * Medium 800      (800 on longest side)
-     * Large           (1024 on longest side)
-     * Large 1600      (1600 on longest side)
-     * Large 2048      (2048 on longest side)
-     * Original        (Original size)
-     */
+    Sizes:
+    Square          (75x75)
+    Large Square    (150x150)
+    Thumbnail       (100 on longest side)
+    Small           (240 on longest side)
+    Small 320       (320 on longest side)
+    Medium          (500 on longest side)
+    Medium 640      (640 on longest side)
+    Medium 800      (800 on longest side)
+    Large           (1024 on longest side)
+    Large 1600      (1600 on longest side)
+    Large 2048      (2048 on longest side)
+    Original        (Original size)
 
     $fb->maxSize = "Large";
 
@@ -123,6 +123,15 @@ Options
 - Add CSS file to HTML header (requires `$fb->fullHtml = true;`) `$fb->htmlCss = "/path/to/css";`.
 - Create your own HTML header (requires <html><header></header><body> tags): `$fb->htmlHeader = foo;`.
 - Add "Intro" our "Outro" paragraphs: `$fb->postPrefix = foo;` & `$fb->postSuffix = bar`.
+- Get last errors:  `print $fb->errors;`.
+
+Example Instructions
+--------------------
+1. Add `example.php` to your web servers root directory.
+2. Update the `include` path for `Flickr_Photoblog.php`:  `include "/path/to/Flickr_Photoblog.php"`.
+3. Create a world writable directory within your web servers root directory: `mkdir /var/www/tmp`, `chmod 777 /var/www/tmp`.
+4. Browse to `example.php` via a web browser: `http://mywebserver/example.php`.
+5. Fill in all fields.  The *Output Relative Path* field shoudl be the folder you created in step 3.
 
 Notes
 -----
