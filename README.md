@@ -103,7 +103,9 @@ Options
 -------
 - Set maximum photo size.  *This will attempt to get photos of the specified size.  If they don't exist, the next size lower will be attempted (default starts at Medium).*  
 
-    Sizes:
+Sizes:
+
+    //
     Square          (75x75)
     Large Square    (150x150)
     Thumbnail       (100 on longest side)
@@ -116,17 +118,17 @@ Options
     Large 1600      (1600 on longest side)
     Large 2048      (2048 on longest side)
     Original        (Original size)
-
+    //
     $fb->maxSize = "Large";
-
+    
 - Add attribution at the bottom of a post:  `$fb->attribution = true;`.
 - Add CSS file to HTML header (requires `$fb->fullHtml = true;`) `$fb->htmlCss = "/path/to/css";`.
 - Create your own HTML header (requires <html><header></header><body> tags): `$fb->htmlHeader = foo;`.
 - Add "Intro" our "Outro" paragraphs: `$fb->postPrefix = foo;` & `$fb->postSuffix = bar`.
 - Get last errors:  `print $fb->errors;`.
 
-Example Instructions
---------------------
+example.php Instructions
+------------------------
 1. Add `example.php` to your web servers root directory.
 2. Update the `include` path for `Flickr_Photoblog.php`:  `include "/path/to/Flickr_Photoblog.php"`.
 3. Create a world writable directory within your web servers root directory: `mkdir /var/www/tmp`, `chmod 777 /var/www/tmp`.
