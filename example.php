@@ -31,10 +31,7 @@ if ($apiKey && $userName && $tags & $title) {
     if ($_POST['size']) {
         $fb->maxSize = $_POST['size'];
     }
-    if (file_exists($outputFile)) {
-        $fh = fopen($outputFile, "w");
-    }
-    print_r($fb->errors);
+    $fh = fopen($outputFile, "w");
     $html = $fb->getHtml();
     fwrite($fh, $html);
 }
@@ -115,7 +112,7 @@ elseif (file_exists($outputFile)) {
     <br/>
     <div style="text-align:center;">
     <?php
-        if (file_exists($outputFile)) {
+        if (file_exists($outputFile) && (filesize($outputFile) > 0)) {
             echo "<a style='font-size:200%' href='" . $outputFile . "'>View your Photoblog!</a>";
         }
     ?>
