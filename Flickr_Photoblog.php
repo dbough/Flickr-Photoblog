@@ -43,13 +43,7 @@ class Flickr_Photoblog {
      * Holds errors.
      * @var string
      */
-    var $errors;
-
-    /**
-     * Suppress error output?
-     * @var boolean
-     */
-    var $errorSuppress = false;
+    var $error;
 
     /**
      * Flickr/API object
@@ -157,8 +151,6 @@ class Flickr_Photoblog {
             'api_key'=>$apiKey
         ));
 
-        $this->getError();
-
         // Put our arguments into vars.
         $this->userName = $userName;
         $this->tags = $tags;
@@ -174,6 +166,7 @@ class Flickr_Photoblog {
     function getSetUserInfo($name)
     {
         $results = $this->flickr->callMethod('flickr.people.findByUsername', array('username'=>$name));
+        
         if ($results) {
             foreach ($results->children as $child) {
                 if ($child->attributes) {
@@ -183,7 +176,7 @@ class Flickr_Photoblog {
             }
         }
         else {
-            $this->getError();
+            $this->setError();
         }
     }
 
@@ -194,6 +187,7 @@ class Flickr_Photoblog {
     function getUserProfile()
     {
         $results = $this->flickr->callMethod('flickr.urls.getUserProfile', array('user_id'=>$this->userId));
+
         if ($results) {
             foreach ($results->children as $child) {
                 if (isset($child->attributes['url'])) {
@@ -202,7 +196,7 @@ class Flickr_Photoblog {
             }
         }
         else {
-            $this->getError();
+            $this->setError();
         }
     }
 
@@ -212,7 +206,13 @@ class Flickr_Photoblog {
      */
     function getHtml()
     {
+        // Exit if we there have been errors (with the API id or getting user info)
+        if ($this->error) {
+            return false;
+        }
+
         $photos = $this->getPhotos();
+
         if ($photos) {
             // Main loop
             foreach ($photos as $photo) {
@@ -246,7 +246,7 @@ class Flickr_Photoblog {
             }
         }
         else {
-            $this->getError();
+            $this->setError();
         }
     }
 
@@ -262,10 +262,15 @@ class Flickr_Photoblog {
             'tags'=>$this->tags
         ));
 
-        // Set total number of photos.  Max (for now) is 100
-        $this->totalPhotos = ($results->children[1]->attributes['total'] <= 100) ? $results->children[1]->attributes['total'] : 100;
+        if ($results) {
+            // Set total number of photos.  Max (for now) is 100
+            $this->totalPhotos = ($results->children[1]->attributes['total'] <= 100) ? $results->children[1]->attributes['total'] : 100;
 
-        return $results->children[1]->children;
+            return $results->children[1]->children;
+        } 
+        else {
+            $this->setError();
+        }
     }
 
 
@@ -295,7 +300,7 @@ class Flickr_Photoblog {
             return $this->getMatchingPhoto($photoArray, $this->maxSize, $limit);
         }
         else {
-            $this->getError();
+            $this->setError();
         }
     }
 
@@ -304,6 +309,7 @@ class Flickr_Photoblog {
      * match the max size.  Called by getPhotoAttributes()
      * @param  array $photoArray
      * @param  string $size
+     * @param  int $limit
      * @return array
      */
     function getMatchingPhoto($photoArray, $size, $limit) 
@@ -334,7 +340,6 @@ class Flickr_Photoblog {
 
     /**
      * Get description, title and upload date
-     * @param  object $flickr
      * @param  int $id
      * @return array
      */
@@ -361,13 +366,12 @@ class Flickr_Photoblog {
             return array('description'=>$description, 'title'=>$title, 'date'=>$date);
         }
         else {
-            $this->getError();
+            $this->setError();
         }
     }
 
     /**
      * Create blog post HTML
-     * @param  array $htmlArray
      * @return string of html
      */
     function buildHtml()
@@ -387,8 +391,11 @@ class Flickr_Photoblog {
         // Build our HTML
         foreach ($this->htmlArray as $item) {
             $this->html .= "<img src='" . $item['source'] . "' alt='" . $item['title'] . "'" .
-                " height='" . $item['height'] . "' width='" . $item['width'] . "' title='" . $item['title'] . "'/>\n" .
-                "<p>" . $item['description'] . "</p>\n";
+                " height='" . $item['height'] . "' width='" . $item['width'] . "' title='" . $item['title'] . "'/>\n";
+
+                if ($item['description']) {
+                    $this->html .= "<p>" . $item['description'] . "</p>\n";
+                }
         }
 
         // Append a paragraph.
@@ -433,20 +440,17 @@ class Flickr_Photoblog {
     }
 
     /**
-     * Print Flickr error id and message
-     * @param  object $flickr
+     * Set local error based on flickr errors.
      * @return string
      */
-    function getError()
+    function setError()
     {
         $code = $this->flickr->getErrorCode();
         $message = $this->flickr->getErrorMessage();
 
-        $this->error = "[Flickr]  Code: " . $code . "  Message:  " . $message . "\n";
-        if (!$errorSuppress) {
-            return $this->errors;
+        if ($code && $message) {
+            $this->error = "[Flickr]  Code: " . $code . "  Message:  " . $message . "\n";
         }
-        exit;
     }
 
     /**
@@ -455,7 +459,7 @@ class Flickr_Photoblog {
      * @param  string $b
      * @return bool
      */
-    static function sortByDate($a, $b) 
+    private function sortByDate($a, $b) 
     {
         return $a['date'] - $b['date'];
     }

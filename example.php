@@ -31,11 +31,24 @@ if ($apiKey && $userName && $tags & $title) {
     if ($_POST['size']) {
         $fb->maxSize = $_POST['size'];
     }
-    $fh = fopen($outputFile, "w");
     $html = $fb->getHtml();
-    fwrite($fh, $html);
+    if ($html) {
+        $fh = fopen($outputFile, "w");
+        fwrite($fh, $html);
+        fclose($fh);
+    }
+    else {
+        echo "<pre>";
+        echo $fb->error;
+        echo "</pre>";
+    }
 }
-elseif (file_exists($outputFile)) {
+else {
+    $errorMsg = "<pre>";
+    $errorMsg .= "API Key, Username, Tags and Title Required!";
+    $errorMsg .= "</pre>";
+}
+if (file_exists($outputFile)) {
     unlink($outputFile);
 }
 ?>
@@ -52,7 +65,9 @@ elseif (file_exists($outputFile)) {
         <h1>Flickr Photoblog Example</h1>
         <p>Flickr Photoblog allows you to easily create a blog post or webpage from photos on Flickr.&nbsp;&nbsp;<a href="https://github.com/dbough/Flickr-Photoblog">Get more info here.</a></p>
     </div>
-
+    <div style="text-align:center;">
+        <?php if ($errorMsg) { echo $errorMsg; } ?>
+    </div>
         <div style="width:70%;margin:auto;padding:auto;">
             <div style="float:left;">
                  <form method="post" action="example.php" >

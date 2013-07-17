@@ -125,7 +125,7 @@ Sizes:
 - Add CSS file to HTML header (requires `$fb->fullHtml = true;`) `$fb->htmlCss = "/path/to/css";`.
 - Create your own HTML header (requires <html><header></header><body> tags): `$fb->htmlHeader = foo;`.
 - Add "Intro" our "Outro" paragraphs: `$fb->postPrefix = foo;` & `$fb->postSuffix = bar`.
-- Get last errors:  `print $fb->errors;`.
+- Get last error:  `print $fb->error;`.
 
 example.php Instructions
 ------------------------
