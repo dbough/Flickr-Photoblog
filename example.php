@@ -34,13 +34,16 @@ if ($apiKey && $userName && $tags & $title) {
     $html = $fb->getHtml();
     if ($html) {
         $fh = fopen($outputFile, "w");
-        fwrite($fh, $html);
-        fclose($fh);
+        if ($fh) {
+            fwrite($fh, $html);
+            fclose($fh);
+        }
+        else {
+            $errorMsg = "Error opening  " . $outputFile;
+        }
     }
     else {
-        echo "<pre>";
-        echo $fb->error;
-        echo "</pre>";
+        $errorMsg .= $fb->error;
     }
 }
 else {
@@ -66,7 +69,18 @@ if (file_exists($outputFile)) {
         <p>Flickr Photoblog allows you to easily create a blog post or webpage from photos on Flickr.&nbsp;&nbsp;<a href="https://github.com/dbough/Flickr-Photoblog">Get more info here.</a></p>
     </div>
     <div style="text-align:center;">
-        <?php if ($errorMsg) { echo $errorMsg; } ?>
+        <?php 
+            if ($errorMsg && $_POST) { 
+                echo "<div style='background-color:yellow;'>";
+                echo "<pre>";
+                echo $errorMsg; 
+                echo "</pre>";
+                echo "</div>";
+            } 
+            if (file_exists($outputFile) && (filesize($outputFile) > 0)) {
+                echo "<a style='font-size:200%' href='" . $outputFile . "'>View your Photoblog!</a>";
+            }
+        ?>
     </div>
         <div style="width:70%;margin:auto;padding:auto;">
             <div style="float:left;">
@@ -125,13 +139,6 @@ if (file_exists($outputFile)) {
         </form>
         </div>
     <br/>
-    <div style="text-align:center;">
-    <?php
-        if (file_exists($outputFile) && (filesize($outputFile) > 0)) {
-            echo "<a style='font-size:200%' href='" . $outputFile . "'>View your Photoblog!</a>";
-        }
-    ?>
-    </div>
 </div>
 </body>
 </html>
