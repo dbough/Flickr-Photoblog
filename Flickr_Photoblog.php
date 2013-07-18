@@ -391,11 +391,8 @@ class Flickr_Photoblog {
         // Build our HTML
         foreach ($this->htmlArray as $item) {
             $this->html .= "<img src='" . $item['source'] . "' alt='" . $item['title'] . "'" .
-                " height='" . $item['height'] . "' width='" . $item['width'] . "' title='" . $item['title'] . "'/>\n";
-
-                if ($item['description']) {
-                    $this->html .= "<p>" . $item['description'] . "</p>\n";
-                }
+                " height='" . $item['height'] . "' width='" . $item['width'] . "' title='" . $item['title'] . "'/>\n" . 
+                "<p>" . html_entity_decode($item['description']) . "</p>\n";
         }
 
         // Append a paragraph.

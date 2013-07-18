@@ -51,7 +51,7 @@ else {
     $errorMsg .= "API Key, Username, Tags and Title Required!";
     $errorMsg .= "</pre>";
 }
-if (file_exists($outputFile)) {
+if (file_exists($outputFile) && !$_POST) {
     unlink($outputFile);
 }
 ?>
@@ -106,7 +106,7 @@ if (file_exists($outputFile)) {
                         <input type="text" placeholder="HTML Output Path" name="outputPath" size="40">
                     </p>
             </div>
-            <div>
+            <div style="float:right;">
                     <p>
                         Attribution&nbsp;&nbsp;
                         <input type="checkbox" name="attrib"/>
@@ -133,7 +133,8 @@ if (file_exists($outputFile)) {
                         <input type="checkbox" name="fullHtml"/>
                     </p>
             </div>
-            <p style='margin-top:100px;'>
+            <div style="clear:both;"></div>
+            <p style='margin-top:30px;'>
                 <input type="submit" name="submit"/>
             </p>
         </form>
