@@ -1,8 +1,6 @@
 Flickr-Photoblog v0.1.0
 =======================
-Flickr Photoblog allows you to easily create a blog post or webpage from photos on Flickr.  
-
-See a working example at http://www.danielbough.com/photoblog
+Flickr Photoblog allows you to easily create a blog post or webpage from photos on Flickr.
 
 Author
 ------
